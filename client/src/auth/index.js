@@ -10,18 +10,21 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
-    REGISTER_USER: "REGISTER_USER"
+    REGISTER_USER: "REGISTER_USER",
+    ACCOUNT_ERROR: "ACCOUNT_ERROR"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
-        loggedIn: false
+        loggedIn: false,
+        err: true, //register screen -> starts from error state bc none field is instatiated bc line 26-28
+        errMsg: "",
     });
     const history = useHistory();
 
     useEffect(() => {
-        auth.getLoggedIn();
+        auth.getLoggedIn(); //state is being loaded one cycle to late, 
     }, []);
 
     const authReducer = (action) => {
@@ -30,25 +33,41 @@ function AuthContextProvider(props) {
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: payload.loggedIn
+                    loggedIn: payload.loggedIn,
+                    err: false,
+                    errMsg: "",
                 });
             }
             case AuthActionType.LOGIN_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    err: false,
+                    errMsg: "",
                 })
             }
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
-                    loggedIn: false
+                    loggedIn: false,
+                    err: false,
+                    errMsg: "",
                 })
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    err: false,
+                    errMsg: "",
+                })
+            }
+            case AuthActionType.ACCOUNT_ERROR: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    err: true,
+                    errMsg: payload,
                 })
             }
             default:
@@ -70,6 +89,7 @@ function AuthContextProvider(props) {
     }
 
     auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
+       try {
         const response = await api.registerUser(firstName, lastName, email, password, passwordVerify);      
         if (response.status === 200) {
             authReducer({
@@ -80,18 +100,37 @@ function AuthContextProvider(props) {
             })
             history.push("/");
         }
+       }
+        catch(err){
+                console.log("ERROR HERE!!!");
+                authReducer({
+                    type: AuthActionType.ACCOUNT_ERROR,
+                    payload: err.response.data.errorMessage
+                })
+                history.push("/register");
+        }
     }
 
     auth.loginUser = async function(email, password) {
-        const response = await api.loginUser(email, password);
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
+        try{
+            const response = await api.loginUser(email, password);
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+            }
+        }
+        catch(err){
+            console.log("ERROR HERE2!!!");
+                authReducer({
+                    type: AuthActionType.ACCOUNT_ERROR,
+                    payload: err.response.data.errorMessage
+                })
+                history.push("/login");
         }
     }
 

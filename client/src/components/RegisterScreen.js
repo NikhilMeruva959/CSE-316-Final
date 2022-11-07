@@ -12,9 +12,26 @@ import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import * as React from 'react';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -26,11 +43,32 @@ export default function RegisterScreen() {
             formData.get('password'),
             formData.get('passwordVerify')
         );
+        if(auth.err){
+            handleOpen();
+        }
     };
 
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
+
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Account Error
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            {auth.errMsg}
+                        </Typography>
+                        <Button onClick={handleClose}>Close</Button>
+                    </Box>
+                </Modal>
+
                 <Box
                     sx={{
                         marginTop: 8,
