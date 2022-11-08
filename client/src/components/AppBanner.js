@@ -32,6 +32,9 @@ export default function AppBanner() {
         handleMenuClose();
         auth.logoutUser();
     }
+    const handleLogout2 = () => {
+        auth.logoutUser();
+    }
 
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
@@ -86,7 +89,8 @@ export default function AppBanner() {
         let userInitials = auth.getUserInitials();
         console.log("userInitials: " + userInitials);
         if (loggedIn) 
-            return <div>{userInitials}</div>;
+            // return <div>{userInitials}</div>;
+            return <IconButton onClick={handleLogout2}>{userInitials}</IconButton>
         else
             return <AccountCircle />;
     }
@@ -111,7 +115,7 @@ export default function AppBanner() {
                             aria-label="account of current user"
                             aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
+                            onClick={!auth.loggedIn ? handleProfileMenuOpen : handleLogout2}
                             color="inherit"
                         >
                             { getAccountMenu(auth.loggedIn) }
