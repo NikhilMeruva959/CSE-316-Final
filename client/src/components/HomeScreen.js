@@ -7,6 +7,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
+import { MenuItem } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+import AuthContext from '../auth';
+
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -14,6 +18,8 @@ import Typography from '@mui/material/Typography'
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
+    const history = useHistory();
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -21,6 +27,17 @@ const HomeScreen = () => {
 
     function handleCreateNewList() {
         store.createNewList();
+    }
+    // const handleLogout = (event) => {
+    //     event.preventDefault();
+    //     auth.logoutUser();
+    //     // if(auth.err){
+    //     //     handleOpen();
+    //     // }
+    // };
+    function handleLogout(){         
+        auth.logoutUser();
+        history.push("/");
     }
     let listCard = "";
     if (store) {
@@ -48,7 +65,7 @@ const HomeScreen = () => {
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                <Typography variant="h2">Your Lists</Typography> <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </div>
             <div id="list-selector-list">
                 {
