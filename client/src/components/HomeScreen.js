@@ -28,13 +28,6 @@ const HomeScreen = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
-    // const handleLogout = (event) => {
-    //     event.preventDefault();
-    //     auth.logoutUser();
-    //     // if(auth.err){
-    //     //     handleOpen();
-    //     // }
-    // };
     function handleLogout(){         
         auth.logoutUser();
         history.push("/");
