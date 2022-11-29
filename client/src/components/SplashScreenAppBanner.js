@@ -13,7 +13,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
@@ -101,83 +100,36 @@ export default function AppBanner() {
   }
 
   return (
-    <>
-      <AppBar
-        position="static"
-        style={{ width: "100%", height: "10%", backgroundColor: "#E3E3E3" }}
-      >
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
         <Toolbar>
           <Typography
-            variant="h3"
+            variant="h4"
             noWrap
-            component="a"
-            href="/"
-            sx={{
-              display: { xs: "none", md: "flex" },
-              paddingTop: "1%",
-              fontStyle: "italic",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "#db3d3d",
-              textDecoration: "none",
-            }}
+            component="div"
+            sx={{ display: { xs: "none", sm: "block" } }}
           >
-            Playlister
+            <Link style={{ textDecoration: "none", color: "white" }} to="/">
+              ⌂
+            </Link>
           </Typography>
-          <Box sx={{ flexGrow: 0.95 }}></Box>
+          <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "11%",
-                paddingRight: "11%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/login/"
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={!auth.loggedIn ? handleProfileMenuOpen : handleLogout2}
+              color="inherit"
             >
-              Login
-            </Button>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/register/"
-            >
-              Create Account
-            </Button>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/"
-            >
-              Continue as Guest
-            </Button>
+              {getAccountMenu(auth.loggedIn)}
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
       {menu}
-    </>
+    </Box>
   );
 }
