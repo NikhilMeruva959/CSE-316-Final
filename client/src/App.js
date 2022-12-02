@@ -28,10 +28,6 @@ const App = () => {
     <BrowserRouter>
       <AuthContextProvider>
         <GlobalStoreContextProvider>
-          {/* <Switch> */}
-          {/* <Route path="/" exact component={SplashScreenAppBanner} /> */}
-          {/* <AppBanner /> */}
-          {/* </Switch> */}
           <AppBanner />
           <Switch>
             <Route path="/" exact component={HomeWrapper} />

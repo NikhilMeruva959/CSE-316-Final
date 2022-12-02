@@ -4,6 +4,7 @@ import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 
 import EditToolbar from "./EditToolbar";
+import SplashBanner from "./SplashBanner";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AppBar from "@mui/material/AppBar";
@@ -14,13 +15,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
+import Fade from "@mui/material/Fade";
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -38,66 +39,51 @@ export default function AppBanner() {
   };
 
   const menuId = "primary-search-account-menu";
-  const loggedOutMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/login/">Login</Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/register/">Create New Account</Link>
-      </MenuItem>
-    </Menu>
-  );
-  const loggedInMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </Menu>
-  );
-
-  let editToolbar = "";
-  let menu = loggedOutMenu;
-  if (auth.loggedIn) {
-    menu = loggedInMenu;
-    if (store.currentList) {
-      editToolbar = <EditToolbar />;
-    }
-  }
 
   function getAccountMenu(loggedIn) {
     let userInitials = auth.getUserInitials();
     console.log("userInitials: " + userInitials);
-    if (loggedIn)
-      // return <div>{userInitials}</div>;
-      return <IconButton onClick={handleLogout2}>{userInitials}</IconButton>;
+    if (loggedIn) return <div style={{ color: "black" }}>{userInitials}</div>;
     else return <AccountCircle />;
+  }
+
+  function MainBanner() {
+    return (
+      <>
+        <IconButton
+          size="large"
+          edge="end"
+          aria-label="account of current user"
+          aria-controls={isMenuOpen ? "fade-menu" : undefined}
+          aria-expanded={isMenuOpen ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleProfileMenuOpen}
+          color="inherit"
+        >
+          {getAccountMenu(auth.loggedIn)}
+        </IconButton>
+        <Menu
+          id="fade-menu"
+          MenuListProps={{
+            "aria-labelledby": "fade-button",
+          }}
+          anchorEl={anchorEl}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+          TransitionComponent={Fade}
+          getContentAnchorEl={null}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
+      </>
+    );
+  }
+
+  let menuTemp = <SplashBanner />;
+  if (auth.loggedIn) {
+    menuTemp = <MainBanner />;
   }
 
   return (
@@ -125,59 +111,9 @@ export default function AppBanner() {
             Playlister
           </Typography>
           <Box sx={{ flexGrow: 0.95 }}></Box>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "11%",
-                paddingRight: "11%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/login/"
-            >
-              Login
-            </Button>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/register/"
-            >
-              Create Account
-            </Button>
-            <Button
-              style={{
-                color: "black",
-                border: "1px solid black",
-                paddingTop: "3%",
-                paddingBottom: "3%",
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginTop: "2%",
-                marginRight: "2%",
-              }}
-              component={Link}
-              to="/"
-            >
-              Continue as Guest
-            </Button>
-          </Box>
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>{menuTemp}</Box>
         </Toolbar>
       </AppBar>
-      {menu}
     </>
   );
 }
