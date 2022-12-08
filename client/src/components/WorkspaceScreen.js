@@ -20,6 +20,8 @@ function WorkspaceScreen() {
   if (store.isEditSongModalOpen()) {
     modalJSX = <MUIEditSongModal />;
   } else if (store.isRemoveSongModalOpen()) {
+    console.log("0000");
+    console.log(store.isRemoveSongModalOpen());
     modalJSX = <MUIRemoveSongModal />;
   }
   let songs = "";
@@ -38,6 +40,7 @@ function WorkspaceScreen() {
     // console.log("HERE HELPER @");
     songs = <>gg</>;
   }
+  // console.log(modalJSX);
   return (
     <Box>
       <List>{songs}</List>

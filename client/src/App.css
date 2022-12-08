@@ -21,7 +21,7 @@ body {
 }
 
 #root {
-  background-color: var(--swatch-primary);
+  background-color: grey;
   font-family: "Lexend Exa";
   position: absolute;
   width: 80%;
@@ -297,7 +297,7 @@ input {
   background: var(--black);
   color: var(--swatch-text);
   cursor: pointer;
-  visibility: hidden;
+  /* visibility: hidden; */
   opacity: 0;
   transition: all 0.35s ease-in;
   font-family: var(--font-primary);

@@ -35,7 +35,7 @@ import SongCard from "./SongCard.js";
 import { Button } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
+import YouTubePlayer from "./YouTubePlayer";
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -118,13 +118,73 @@ const HomeScreen = () => {
           <Tab value="one" label="Player" />
           <Tab value="two" label="Comments" />
         </Tabs>
+        <YouTubePlayer />
       </Box>
     );
   }
+  // let deleteListModal = "";
+  // if (store.isDeleteListModalOpen()) deleteListModal = <MUIDeleteModal />;
+
+  // if (store) {
+  //   listCard = (
+  //     <List sx={{ width: "50%", left: "5%", bgcolor: "background.paper" }}>
+  //       {store.idNamePairs.map((pair) => (
+  //         <Accordion
+  //           expanded={expanded === "panel" + pair._id + ""}
+  //           onChange={handleChange("panel" + pair._id + "")}
+  //         >
+  //           <AccordionSummary
+  //             expandIcon={<ExpandMoreIcon />}
+  //             aria-controls="panel1bh-content"
+  //             id="panel1bh-header"
+  //             onClick={store.setCurrentList2(pair._id)}
+  //           >
+  //             <Typography sx={{ width: "33%", flexShrink: 0 }}>
+  //               {pair.name}
+  //             </Typography>
+  //             <ThumbUpIcon />
+  //             <ThumbDownIcon />
+  //             <Typography>{pair._id}</Typography>
+  //           </AccordionSummary>
+  //           <AccordionDetails>
+  //             <List sx={{ width: "80%", left: "5%", bgcolor: "olive" }}>
+  //               {/* <List
+  //                   id="playlist-cards"
+  //                   sx={{ width: "100%", bgcolor: "background.paper" }}
+  //                 > */}
+  //               {/* {store.currentList === null
+  //                 ? "HEllo"
+  //                 : store.currentList.songs.map((song, index) => (
+  //                     <SongCard
+  //                       id={"playlist-song-" + index}
+  //                       key={"playlist-song-" + index}
+  //                       index={index}
+  //                       song={song}
+  //                     />
+  //                   ))} */}
+  //               {/* <WorkspaceScreen /> */}
+  //               {/* </List> */}
+  //               <Button>Delete</Button> <Button>Duplicate</Button>
+  //               <Typography>Published: </Typography>
+  //               <Typography>Listens: </Typography>
+  //             </List>
+  //           </AccordionDetails>
+  //         </Accordion>
+  //       ))}
+  //     </List>
+  //   );
+  // }
 
   return (
     <>
-      <div id="topBarMainPage" style={{ backgroundColor: "grey" }}>
+      <div
+        id="topBarMainPage"
+        style={{
+          backgroundColor: "grey",
+          borderBottomColor: "black",
+          borderStyle: "solid",
+        }}
+      >
         <Box
           sx={{
             display: {
@@ -201,7 +261,7 @@ const HomeScreen = () => {
         <div id="">
           {listCard}
           {youtubePlayerComments}
-          {/* <MUIDeleteModal /> */}
+          <MUIDeleteModal />
         </div>
       </div>
       <div

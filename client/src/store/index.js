@@ -24,6 +24,7 @@ export const GlobalStoreActionType = {
   CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
   CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
   CREATE_NEW_LIST: "CREATE_NEW_LIST",
+  DUPLICATE_LIST: "DUPLICATE_LIST",
   LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
   MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
@@ -101,6 +102,20 @@ function GlobalStoreContextProvider(props) {
       }
       // CREATE A NEW LIST
       case GlobalStoreActionType.CREATE_NEW_LIST: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          idNamePairs: store.idNamePairs,
+          currentList: payload,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter + 1,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+        });
+      }
+      //DUPLICATE LIST
+      case GlobalStoreActionType.DUPLICATE_LIST: {
         return setStore({
           currentModal: CurrentModal.NONE,
           idNamePairs: store.idNamePairs,
@@ -286,6 +301,32 @@ function GlobalStoreContextProvider(props) {
       console.log("API FAILED TO CREATE A NEW LIST");
     }
   };
+  // THIS FUNCTION CREATES A NEW LIST
+  store.duplicateList = async function (songs) {
+    let newListName = "Untitled" + store.newListCounter;
+    const response = await api.createPlaylist(
+      newListName,
+      songs,
+      auth.user.email,
+      0,
+      0,
+      0
+    );
+    console.log("DUPLICATE_LIST response: " + response);
+    if (response.status === 201) {
+      tps.clearAllTransactions();
+      let newList = response.data.playlist;
+      storeReducer({
+        type: GlobalStoreActionType.DUPLICATE_LIST,
+        payload: newList,
+      });
+
+      // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+      history.push("/playlist/" + newList._id);
+    } else {
+      console.log("API FAILED TO CREATE A NEW LIST");
+    }
+  };
 
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = function () {
@@ -412,31 +453,95 @@ function GlobalStoreContextProvider(props) {
   store.getSongsFromList = function (id) {
     console.log("XXX");
 
-    async function asynchHelper(id) {
-      let response = await api.getPlaylistById(id);
+    function asynchHelper(id) {
+      let response = api.getPlaylistById(id);
       console.log("res");
       console.log(response);
-      if (response.data.success) {
+      response.then(function (result) {
+        console.log(result); // "Some User token"
+        response = result;
         let playlist = response.data.playlist;
         console.log("XXX2");
-        console.log(playlist);
+        console.log(playlist.songs);
+        return playlist.songs;
+      });
+      // if (response.data.success) {
+      // let playlist = response.data.playlist;
+      // console.log("XXX2");
+      // console.log(playlist.songs);
 
-        // response = await api.updatePlaylistById(playlist._id, playlist);
-        // if (response.data.success) {
-        //   storeReducer({
-        //     type: GlobalStoreActionType.SET_CURRENT_LIST,
-        //     payload: playlist,
-        //   });
-        //   history.push("/playlist/" + playlist._id);
-        // }
-        return playlist;
+      // response = await api.updatePlaylistById(playlist._id, playlist);
+      // if (response.data.success) {
+      //   storeReducer({
+      //     type: GlobalStoreActionType.SET_CURRENT_LIST,
+      //     payload: playlist,
+      //   });
+      //   history.push("/playlist/" + playlist._id);
+      // }
+      // return playlist.songs;
+      // }
+    }
+    asynchHelper(id);
+    console.log("XXX3");
+  };
+  store.getThumbsUp = function (id) {
+    console.log(id);
+    async function asynchLoadThumbsUp(id) {
+      console.log(id);
+      const response = await api.getPlaylistById(id);
+      if (response.data.success) {
+        // let pairsArray = response.data.idNamePairs;
+        console.log("FFFF");
+        console.log(response.data.playlist.thumbsUp);
+        return response.data.playlist.thumbsUp;
+      } else {
+        console.log("API FAILED TO GET THE LIST PAIRS");
       }
     }
-    // asyncSetCurrentList(id);
+    asynchLoadThumbsUp(id);
   };
+
+  // store.getSongsFromList = function (id) {
+  //   console.log("XXX");
+
+  //   function asynchHelper(id) {
+  //     let response = api.getPlaylistById(id);
+  //     console.log("res");
+  //     console.log(response);
+  //     response.then(function (result) {
+  //       console.log(result); // "Some User token"
+  //       response = result;
+  //       let playlist = response.data.playlist;
+  //       console.log("XXX2");
+  //       console.log(playlist.songs);
+  //       return playlist.songs;
+  //     });
+  //     // if (response.data.success) {
+  //     // let playlist = response.data.playlist;
+  //     // console.log("XXX2");
+  //     // console.log(playlist.songs);
+
+  //     // response = await api.updatePlaylistById(playlist._id, playlist);
+  //     // if (response.data.success) {
+  //     //   storeReducer({
+  //     //     type: GlobalStoreActionType.SET_CURRENT_LIST,
+  //     //     payload: playlist,
+  //     //   });
+  //     //   history.push("/playlist/" + playlist._id);
+  //     // }
+  //     // return playlist.songs;
+  //     // }
+  //   }
+  //   asynchHelper(id);
+  //   console.log("XXX3");
+  // };
 
   store.getPlaylistSize = function () {
     return store.currentList.songs.length;
+  };
+
+  store.getListens = function () {
+    return store.currentList.listens;
   };
   store.addNewSong = function () {
     let index = this.getPlaylistSize();
