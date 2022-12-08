@@ -13,7 +13,7 @@ import FastForwardIcon from "@mui/icons-material/FastForward";
 function YouTubePlayer() {
   const { store } = useContext(GlobalStoreContext);
   //test playlist
-  let playlist = ["mqmxkGjow1A", "8RbXIMZmVv8", "8UbNbor3OqQ"];
+  let playlist = ["_mVW8tgGY_w", "_m-gO0HSCYk", "_2-Y2WbrKpw"];
   let currentSong = 0;
 
   const playerDim = {

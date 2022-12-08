@@ -105,7 +105,7 @@ const HomeScreen = () => {
   if (store) {
     youtubePlayerComments = (
       <Box
-        sx={{ width: "45%", left: "5%", backgroundColor: "orange" }}
+        sx={{ width: "45%", left: "5%" }}
         style={{ float: "right", display: "inline-block" }}
       >
         <Tabs
@@ -273,17 +273,34 @@ const HomeScreen = () => {
           alignItems: "center",
           //   backgroundColor: "purple",
         }}
+      ></div>
+      <div
+        style={{
+          position: "fixed",
+          marginTop: "100%",
+          // textAlign: "center",
+          bottom: "0",
+          left: "57%",
+          // width: "5%",
+          paddingBottom: "5%",
+        }}
       >
-        <Fab
-          color="black"
-          aria-label="add"
-          //   id="add-list-button"
-          onClick={handleCreateNewList}
-        >
+        <Fab color="black" aria-label="add" onClick={handleCreateNewList}>
           <AddIcon />
         </Fab>
-        <Typography variant="h2">Your Lists</Typography>
       </div>
+      <Typography
+        variant="h2"
+        style={{
+          position: "fixed",
+          textAlign: "center",
+          bottom: "0",
+          width: "80%",
+          paddingBottom: "5%",
+        }}
+      >
+        Your Lists
+      </Typography>
     </>
   );
 };
